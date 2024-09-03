@@ -40,11 +40,19 @@ func main() {
 
 	log.Info("Saved URL", slog.Int64("id", id))
 
-	id, err = storage.SaveURL("https://google.com", "google")
-	if err != nil {
-		log.Error("Failed to save url", sl.Err(err))
-		os.Exit(1)
-	}
+	// id, err = storage.SaveURL("https://google.com", "google")
+	// if err != nil {
+	// 	log.Error("Failed to save url", sl.Err(err))
+	// 	os.Exit(1)
+	// }
+
+	err = storage.DeleteURL("google")
+    if err != nil {
+        log.Error("Failed to delete url", sl.Err(err))
+        os.Exit(1)
+    }
+
+    log.Info("Deleted URL with alias 'google'")
 
 	_ = storage
 }
