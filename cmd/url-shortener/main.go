@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
 	"os"
 	"url-shortener/internal/config"
@@ -17,17 +16,14 @@ import (
 
 const (
 	envLocal = "local"
-	envDev   = "dev"
-	envProd  = "prod"
+	envDev   = "development"
+	envProd  = "production"
 )
 
 func main() {
 	cfg := config.MustLoad()
-	fmt.Println(cfg)
 
 	log := setupLogger(cfg.Env)
-
-	log = log.With(slog.String("env", cfg.Env))
 
 	log.Info("starting url-shortener")
 	log.Debug("debug msg enabled")
@@ -45,12 +41,6 @@ func main() {
 	}
 
 	log.Info("Saved URL", slog.Int64("id", id))
-
-	// id, err = storage.SaveURL("https://google.com", "google")
-	// if err != nil {
-	// 	log.Error("Failed to save url", sl.Err(err))
-	// 	os.Exit(1)
-	// }
 
 	err = storage.DeleteURL("google")
 	if err != nil {
@@ -73,33 +63,38 @@ func main() {
 }
 
 func setupLogger(env string) *slog.Logger {
-	var log *slog.Logger
+	var opts slogpretty.PrettyHandlerOptions
+
 	switch env {
 	case envLocal:
-		log = slog.New(
-			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		opts = slogpretty.PrettyHandlerOptions{
+			SlogOpts: &slog.HandlerOptions{
+				Level: slog.LevelDebug,
+			},
+		}
+
 	case envDev:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		opts = slogpretty.PrettyHandlerOptions{
+			SlogOpts: &slog.HandlerOptions{
+				Level: slog.LevelDebug,
+			},
+		}
+
 	case envProd:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
-		)
+		opts = slogpretty.PrettyHandlerOptions{
+			SlogOpts: &slog.HandlerOptions{
+				Level: slog.LevelInfo,
+			},
+		}
 
-	}
-	return log
-}
-
-func setupPrettySlog() *slog.Logger {
-	opts := slogpretty.PrettyHandlerOptions{
-		SlogOpts: &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		},
+	default: // Если окружение не распознано, используем настройки для продакшена по умолчанию
+		opts = slogpretty.PrettyHandlerOptions{
+			SlogOpts: &slog.HandlerOptions{
+				Level: slog.LevelInfo,
+			},
+		}
 	}
 
 	handler := opts.NewPrettyHandler(os.Stdout)
-
 	return slog.New(handler)
 }
