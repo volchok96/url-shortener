@@ -8,11 +8,11 @@ import (
 	resp "url-shortener/internal/lib/api/response"
 	"url-shortener/internal/lib/logger/sl"
 	"url-shortener/internal/storage"
+	"url-shortener/internal/lib/random"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
-	"url-shortener/internal/lib/random"
 )
 
 type Request struct {
@@ -30,6 +30,8 @@ const (
 	StatusError = "Error"
 	aliasLength = 5
 )
+
+//go:generate go run github.com/vektra/mockery/v2@v2.45.0 --name=URLSaver
 
 type URLSaver interface {
 	SaveURL(urlToSave string, alias string) (int64, error)
