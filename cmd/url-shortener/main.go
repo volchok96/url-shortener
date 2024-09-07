@@ -44,13 +44,13 @@ func main() {
 
 	log.Info("Saved URL", slog.Int64("id", id))
 
-	err = storage.DeleteURL("google")
-	if err != nil {
-		log.Error("Failed to delete url", sl.Err(err))
-		os.Exit(1)
-	}
+	// err = storage.DeleteURL("google")
+	// if err != nil {
+	// 	log.Error("Failed to delete url", sl.Err(err))
+	// 	os.Exit(1)
+	// }
 
-	log.Info("Deleted URL with alias 'google'")
+	// log.Info("Deleted URL with alias 'google'")
 
 	_ = storage
 
@@ -63,7 +63,15 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Post("/url", save.New(log, storage))
+	router.Route("/url", func(r chi.Router) {
+		r.Use(middleware.BasicAuth("url-shortener", map[string]string{
+			cfg.HTTPServer.User: cfg.HTTPServer.Password,
+		}))
+
+		r.Post("/", save.New(log, storage))
+
+	})
+
 	router.Get("/{alias}", redirect.New(log, storage))
 
 	log.Info("Starting server", slog.String("Address: ", cfg.Address))
