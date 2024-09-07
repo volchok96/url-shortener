@@ -22,6 +22,10 @@ func New(storagePath string) (*Storage, error) {
 
 	}
 
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+
 	_, err = db.Exec(`
         CREATE TABLE IF NOT EXISTS url(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -106,4 +110,8 @@ func (s *Storage) DeleteURL(alias string) error {
 	}
 
 	return nil
+}
+
+func (s *Storage) Close() error {
+	return s.db.Close()
 }
