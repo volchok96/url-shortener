@@ -1,0 +1,25 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "cmd/url-shortener/main.go",
+        "use": "@vercel/go"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "cmd/url-shortener/main.go"
+      }
+    ],
+    "env": {
+      "CONFIG_PATH": "/root/apps/url-shortener/config/prod.yaml",
+      "DATABASE_URL": "file:./storage.db"
+    },
+    "functions": {
+      "api/*.go": {
+        "runtime": "go"
+      }
+    }
+  }
+  
