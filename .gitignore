@@ -1,2 +1,4 @@
 /storage/
 .vercel
+internal/config/config.preview.yaml
+internal/config/config.production.yaml

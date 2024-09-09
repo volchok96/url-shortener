@@ -1,0 +1,7 @@
+env: "development"
+storage_path: "./storage/dev_storage.db"
+http_server:
+  timeout: 10s
+  idle_timeout: 120s
+  user: "devuser"
+  password: "devpass"

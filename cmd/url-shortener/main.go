@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	envLocal = "local"
+	envLocal = "preview"
 	envDev   = "development"
 	envProd  = "production"
 )

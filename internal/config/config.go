@@ -10,7 +10,7 @@ import (
 )
 
 type Config struct {
-	Env         string `yaml:"env" env-default:"local" env-required:"true"`
+	Env         string `yaml:"env" env-default:"preview" env-required:"true"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServer  `yaml:"http_server"`
 }
@@ -29,7 +29,7 @@ func MustLoad() *Config {
 		panic(err)
 	}
 
-	configPath := filepath.Join(dir, "config", "local.yaml")
+	configPath := filepath.Join(dir, "config", "config.preview.yaml")
 	if configPath == "" {
 		log.Fatal("CONFIG_PATH is not set")
 	}
